@@ -15,7 +15,6 @@ namespace SimpleSmallProjectUpgrade2.Controllers
     {
         private readonly LegacyHelper _legacyHelper = new LegacyHelper();
 
-        // GET: api/data/convertdate
         [HttpGet]
         [Route("api/data/convertdate")]
         public IHttpActionResult ConvertDate()
@@ -23,7 +22,7 @@ namespace SimpleSmallProjectUpgrade2.Controllers
             string dateString = "2023-10-08";
             try
             {
-                var convertedDate = _legacyHelper.ConvertDate(dateString);
+                DateTime convertedDate = _legacyHelper.ConvertDate(dateString);
                 return Ok($"Converted Date: {convertedDate.ToString("yyyy-MM-dd HH:mm:ss")}");
             }
             catch (Exception ex)
@@ -33,29 +32,23 @@ namespace SimpleSmallProjectUpgrade2.Controllers
 
         }
 
-        // POST: api/data/deserialize
         [HttpGet]
         [Route("api/data/deserialize")]
         public IHttpActionResult DeserializeBinary()
         {
             try
             {
-                // Step 1: Create a mock object to serialize and deserialize.
                 var mockObject = new Person(){ Name = "Test Object", Age = 42 };
 
-                // Step 2: Serialize the mock object into a binary format using BinaryFormatter.
-                using (var memoryStream = new MemoryStream())
+                using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    var binaryFormatter = new BinaryFormatter();
-                    binaryFormatter.Serialize(memoryStream, mockObject);  // Serialize mock data
+                    BinaryFormatter binaryFormatter = new BinaryFormatter();
+                    binaryFormatter.Serialize(memoryStream, mockObject);  
 
-                    // Step 3: Reset the memory stream position to the beginning.
                     memoryStream.Seek(0, SeekOrigin.Begin);
 
-                    // Step 4: Deserialize the binary data using the LegacyHelper method.
                     var deserializedObject = _legacyHelper.DeserializeBinary(memoryStream);
 
-                    // Step 5: Return the deserialized object in a response.
                     return Ok(new
                     {
                         Message = "Deserialization successful!",
